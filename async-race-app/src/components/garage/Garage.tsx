@@ -3,11 +3,10 @@ import React from 'react';
 import g from './Garage.module.css'
 import c from './Create.module.css'
 
-import { ReactComponent as Car } from './car.svg'
 import { carsDataType, GaragePropsType, updateCarType } from '../../types/types'
 import axios from 'axios';
 import randomArray from './../random/random-array';
-// import CarItem from './CarItem';
+import CarItem from './CarItem';
 
 
 const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, setTotalCar, isGarage }) => {
@@ -17,7 +16,6 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
   const [updateColor, setUpdateColor] = React.useState('')
   const [curId, setCurId] = React.useState(Number)
   let [page, setPage] = React.useState(1)
-  const [engineOn, setEngineOn] = React.useState(false)
 
   const create = (createValue: string, createColor: string) => {
     const newCar = {
@@ -92,56 +90,7 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
       })
   }
 
-
-  let duration: number
-  let progress: number
-  const [ride, setRide] = React.useState(0)
-  const engineStart = (id: number) => {
-
-    axios.patch(`http://127.0.0.1:3000/engine?id=${id}&status=started`)
-      .then(res => duration = res.data.distance / res.data.velocity)
-    // setInterval(() => { setRide(ride + 20) }, 1000)
-    // console.log(carImg.current);
-    // const start = performance.now();
-    // progress = start / duration
-    // console.log(duration);
-    // setRide(progress)
-    function animate({ timing, draw, duration }: any) {
-
-      let start = performance.now();
-
-      requestAnimationFrame(function animate(time) {
-        // timeFraction изменяется от 0 до 1
-        let timeFraction = (time - start) / duration;
-        if (timeFraction > 1) timeFraction = 1;
-
-        // вычисление текущего состояния анимации
-        let progress = timing(timeFraction);
-
-        draw(progress); // отрисовать её
-
-        if (timeFraction < 1) {
-          requestAnimationFrame(animate);
-        }
-
-      });
-    }
-    animate({
-      duration: 1000,
-      timing(timeFraction: any) {
-        return timeFraction;
-      },
-      draw(progress: any) {
-        setRide(progress * 100)
-      }
-    });
-    console.log(ride);
-
-  }
-
-
   const carItems = (data: carsDataType) => {
-
     return (
       <>
         {data.map(e => {
@@ -152,23 +101,11 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
                 <button onClick={() => remove(e.id)}>REMOVE</button>
                 <span>{e.name}</span>
               </div>
-              <div className={g.start__btn}>
-                <button disabled={engineOn}
-                  onClick={() => engineStart(e.id)}>
-                  E
-                </button>
-                <button disabled={!engineOn}>S</button>
-              </div>
-              <div className={g.road__wrapper}>
-                <Car
-                  key={e.id}
-                  className={g.carImg}
-                  width='90'
-                  height='40'
-                  fill={e.color}
-                  style={{ left: `${ride}%`, maxWidth: "90%" }} />
-                <img src="finish.svg" alt="" />
-              </div>
+              <CarItem
+                key={e.id}
+                id={e.id}
+                color={e.color}
+              />
             </div>
           )
         })}
@@ -206,21 +143,8 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
       </div>
       <h3>Garage ({totalCars})</h3>
       <h4>Page # {page}</h4>
-
       <div className={g.items__wrapper}>
         {carItems(carsData)}
-        {/* {
-          carsData.map(e => {
-            return (
-              <CarItem 
-              key={e.id}
-              id={e.id}
-              color={e.color}
-              name={e.name}
-              />
-            )
-          })
-        } */}
       </div>
       <div className={g.pageBtn}>
         <button disabled={page === 1} onClick={prevPage}>prev</button>
