@@ -1,0 +1,36 @@
+.car__header {
+  margin-top: 10px;
+}
+
+.items__wrapper {
+  position: relative;
+}
+
+.road__wrapper {
+  position: relative;
+  width: calc(100% - 200px);
+
+  border-bottom: 3px dashed black;
+}
+
+.road__wrapper img {
+  position: absolute;
+  right: 130px;
+  bottom: 10px;
+  width: 50px;
+}
+.start__btn {
+
+}
+
+.start__btn button {
+  margin: 5px;
+  padding: 3px 5px;
+  border: 1px solid grey;
+}
+.pageBtn * {
+  margin: 20px 15px 40px 15px;
+}
+.carImg {
+  position: relative;
+}
