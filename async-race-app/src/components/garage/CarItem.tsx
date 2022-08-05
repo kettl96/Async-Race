@@ -5,11 +5,12 @@ import { ReactComponent as Car } from './car.svg'
 import g from './Garage.module.css'
 
 
-const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset }) => {
- 
+const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset, setReset }) => {
+
   const [engineOn, setEngineOn] = React.useState(false)
   const [startOn, setStartOn] = React.useState(false)
 
+  let requestId: number
   let duration: number
   const [ride, setRide] = React.useState(0)
   const engineStart = async (id: number) => {
@@ -21,13 +22,13 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset }) => {
         axios.patch(`http://127.0.0.1:3000/engine?id=${id}&status=drive`)
           .catch(err => errStatus = err.response.status)
       })
-      setEngineOn(!engineOn)
+    setEngineOn(!engineOn)
 
 
     function animate({ timing, draw, duration }: { timing: any, draw: any, duration: number }) {
       let start = performance.now();
 
-      let requestId = requestAnimationFrame(function animate(time) {
+      requestId = requestAnimationFrame(function animate(time) {
         // timeFraction изменяется от 0 до 1
         let timeFraction = (time - start) / duration;
         if (timeFraction > 1) timeFraction = 1;
@@ -41,11 +42,18 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset }) => {
           return cancelAnimationFrame(requestId);
         }
         if (timeFraction < 1) {
-
           requestAnimationFrame(animate);
         }
+        if (reset === true) {
+          console.log("reset");
+
+        }
         if (timeFraction === 1) {
-          setStartOn(!startOn)
+          if (reset === true) {
+            setStartOn(false)
+          } else {
+            setStartOn(!startOn)
+          }
         }
       });
     }
@@ -68,7 +76,17 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset }) => {
     setStartOn(false)
 
   }
-  
+  const disableReset = () => {
+    cancelAnimationFrame(requestId)
+    // setEngineOn(false)
+    // return 0
+  }
+  const rideArr = [{
+
+  }]
+  React.useEffect(() => {
+
+  }, [engineOn])
   return (
     <div>
       <div className={g.start__btn}>
@@ -85,11 +103,12 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset }) => {
         <div className={g.car}>
           <Car
             key={id}
+
             className={g.carImg}
             width='90'
             height='40'
             fill={color}
-            style={{ left: `${ride}%` }} />
+            style={{ left: `${reset ? disableReset() : ride}%` }} />
         </div>
         <img src="finish.svg" alt="" />
       </div>

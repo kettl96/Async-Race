@@ -28,4 +28,5 @@ export type CarItemPropsType = {
   id: number
   color: string
   reset: boolean
+  setReset: ()=> void
 }

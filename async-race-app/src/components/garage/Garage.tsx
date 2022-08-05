@@ -92,10 +92,11 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
   }
 
   const resetClick = () => {
-    let allBtn = document.querySelectorAll('#btnS')
-    console.log(allBtn);
+    // let allBtn = document.querySelectorAll('#btnS')
+    // console.log(allBtn);
     setReset(true)
-    
+
+
   }
   const carItems = (data: carsDataType) => {
     return (
@@ -113,6 +114,7 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
                 id={e.id}
                 color={e.color}
                 reset={reset}
+                setReset={()=>setReset(false)}
               />
             </div>
           )
