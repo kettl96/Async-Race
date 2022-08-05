@@ -9,12 +9,16 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset, setReset }) => 
 
   const [engineOn, setEngineOn] = React.useState(false)
   const [startOn, setStartOn] = React.useState(false)
+  const [disableStop, setDisableStop] = React.useState(false)
 
   let requestId: number
   let duration: number
   const [ride, setRide] = React.useState(0)
   const engineStart = async (id: number) => {
-
+    if (reset) {
+      setRide(0)
+      setReset()
+    }
     let errStatus = 0
     await axios.patch(`http://127.0.0.1:3000/engine?id=${id}&status=started`)
       .then(res => {
@@ -25,7 +29,7 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset, setReset }) => 
     setEngineOn(!engineOn)
 
 
-    function animate({ timing, draw, duration }: { timing: any, draw: any, duration: number }) {
+    function animate({ timing, draw, duration }: { timing: any, draw: any, duration: number, reset: boolean }) {
       let start = performance.now();
 
       requestId = requestAnimationFrame(function animate(time) {
@@ -39,21 +43,16 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset, setReset }) => 
         draw(progress); // отрисовать её
         if (errStatus === 500) {
           setStartOn(!startOn)
+          setDisableStop(true)
+
           return cancelAnimationFrame(requestId);
         }
         if (timeFraction < 1) {
           requestAnimationFrame(animate);
         }
-        if (reset === true) {
-          console.log("reset");
-
-        }
         if (timeFraction === 1) {
-          if (reset === true) {
-            setStartOn(false)
-          } else {
-            setStartOn(!startOn)
-          }
+          setStartOn(!startOn)
+          setDisableStop(true)
         }
       });
     }
@@ -65,12 +64,14 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset, setReset }) => 
       },
       draw(progress: any) {
         setRide(progress * 100)
-      }
+      },
+      reset
     });
 
   }
 
   const engineStop = (id: number) => {
+
     setEngineOn(!engineOn)
     setRide(0)
     setStartOn(false)
@@ -78,15 +79,27 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset, setReset }) => 
   }
   const disableReset = () => {
     cancelAnimationFrame(requestId)
+    // setRide(0)
+
     // setEngineOn(false)
-    // return 0
+    // setReset()
+    return 0
   }
-  const rideArr = [{
-
-  }]
+ 
   React.useEffect(() => {
+    // console.log('eff reset');
+    if (reset) {
+      // setReset()
+      if (disableStop) {
+        setEngineOn(false)
+        setStartOn(false)
+        setRide(0)
+        setDisableStop(false)
 
-  }, [engineOn])
+      }
+    }
+
+  }, [reset, disableStop])
   return (
     <div>
       <div className={g.start__btn}>
@@ -108,7 +121,7 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset, setReset }) => 
             width='90'
             height='40'
             fill={color}
-            style={{ left: `${reset ? disableReset() : ride}%` }} />
+            style={{ left: `${reset && !disableStop ? disableReset() : ride}%` }} />
         </div>
         <img src="finish.svg" alt="" />
       </div>
