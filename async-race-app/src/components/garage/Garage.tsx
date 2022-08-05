@@ -16,6 +16,7 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
   const [updateColor, setUpdateColor] = React.useState('')
   const [curId, setCurId] = React.useState(Number)
   let [page, setPage] = React.useState(1)
+  const [reset, setReset] = React.useState(false)
 
   const create = (createValue: string, createColor: string) => {
     const newCar = {
@@ -90,6 +91,12 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
       })
   }
 
+  const resetClick = () => {
+    let allBtn = document.querySelectorAll('#btnS')
+    console.log(allBtn);
+    setReset(true)
+    
+  }
   const carItems = (data: carsDataType) => {
     return (
       <>
@@ -105,6 +112,7 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
                 key={e.id}
                 id={e.id}
                 color={e.color}
+                reset={reset}
               />
             </div>
           )
@@ -137,7 +145,7 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
         </div>
         <div className={c.buttonWrapper}>
           <button>RASE</button>
-          <button>RESET</button>
+          <button onClick={resetClick}>RESET</button>
           <button onClick={generate}>GENERATE CARS</button>
         </div>
       </div>

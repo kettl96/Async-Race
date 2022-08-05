@@ -27,4 +27,5 @@ export type WinnersPropsType = {
 export type CarItemPropsType = {
   id: number
   color: string
+  reset: boolean
 }

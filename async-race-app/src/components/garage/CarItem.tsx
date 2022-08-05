@@ -5,8 +5,10 @@ import { ReactComponent as Car } from './car.svg'
 import g from './Garage.module.css'
 
 
-const CarItem: React.FC<CarItemPropsType> = ({ id, color }) => {
+const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset }) => {
+ 
   const [engineOn, setEngineOn] = React.useState(false)
+  const [startOn, setStartOn] = React.useState(false)
 
   let duration: number
   const [ride, setRide] = React.useState(0)
@@ -19,7 +21,7 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color }) => {
         axios.patch(`http://127.0.0.1:3000/engine?id=${id}&status=drive`)
           .catch(err => errStatus = err.response.status)
       })
-    setEngineOn(!engineOn)
+      setEngineOn(!engineOn)
 
 
     function animate({ timing, draw, duration }: { timing: any, draw: any, duration: number }) {
@@ -35,12 +37,15 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color }) => {
 
         draw(progress); // отрисовать её
         if (errStatus === 500) {
-          console.log(555);
-
+          setStartOn(!startOn)
           return cancelAnimationFrame(requestId);
         }
         if (timeFraction < 1) {
+
           requestAnimationFrame(animate);
+        }
+        if (timeFraction === 1) {
+          setStartOn(!startOn)
         }
       });
     }
@@ -54,22 +59,24 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color }) => {
         setRide(progress * 100)
       }
     });
+
   }
 
   const engineStop = (id: number) => {
     setEngineOn(!engineOn)
     setRide(0)
+    setStartOn(false)
 
   }
-
+  
   return (
     <div>
       <div className={g.start__btn}>
-        <button disabled={engineOn}
+        <button disabled={engineOn} id={'btnE'}
           onClick={() => { engineStart(id) }}>
           E
         </button>
-        <button disabled={!engineOn}
+        <button disabled={!startOn} id={'btnS'}
           onClick={() => engineStop(id)}>
           S
         </button>
