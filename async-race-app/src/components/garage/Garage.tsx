@@ -17,6 +17,7 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
   const [curId, setCurId] = React.useState(Number)
   let [page, setPage] = React.useState(1)
   const [reset, setReset] = React.useState(false)
+  const [start, setStart] = React.useState(false)
 
   const create = (createValue: string, createColor: string) => {
     const newCar = {
@@ -92,16 +93,35 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
   }
 
   const resetClick = () => {
-    // let allBtn = document.querySelectorAll('#btnS')
-    // console.log(allBtn);
     setReset(true)
-
-
   }
+  let resSpeed: number[] = []
+  const [speedArr, setSpeedArr] = React.useState([] as number[])
+
+  const race = () => {
+    resSpeed = []
+    setSpeedArr([])
+    setStart(true)
+
+    Promise.allSettled(carsData.map(el => axios.patch(`http://127.0.0.1:3000/engine?id=${el.id}&status=started`)))
+      .then(result => {
+        result.forEach((res) => {
+          if (res.status === 'fulfilled') {
+            resSpeed.push(res.value.data.distance / res.value.data.velocity)
+          }
+          if (res.status === "rejected") {
+            console.log(res.reason);
+          }
+        })
+        setSpeedArr(resSpeed)
+        setTimeout(() => { setStart(false) }, Math.max(...resSpeed))        
+      })
+  }
+
   const carItems = (data: carsDataType) => {
     return (
       <>
-        {data.map(e => {
+        {data.map((e, i) => {
           return (
             <div key={e.id}>
               <div className={g.car__header}>
@@ -114,7 +134,8 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
                 id={e.id}
                 color={e.color}
                 reset={reset}
-                setReset={()=>setReset(false)}
+                setReset={() => setReset(false)}
+                speed={speedArr[i]}
               />
             </div>
           )
@@ -122,6 +143,7 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
       </>
     )
   }
+
 
   return (
     <div className={g.wrapper} style={isGarage ? { display: 'block' } : { display: 'none' }}>
@@ -146,7 +168,7 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
             onClick={() => updateClick(updateValue, updateColor, curId)}>UPDATE</button>
         </div>
         <div className={c.buttonWrapper}>
-          <button>RASE</button>
+          <button onClick={race} disabled={start}>RASE</button>
           <button onClick={resetClick}>RESET</button>
           <button onClick={generate}>GENERATE CARS</button>
         </div>
