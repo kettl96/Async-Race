@@ -25,7 +25,6 @@ export type WinnersPropsType = {
   isGarage: boolean
   winners: winnersType
   totalWinners: number
-  setWinners: (React.Dispatch<React.SetStateAction<winnersType>>)
   winInfo: carsDataType
 }
 export type CarItemPropsType = {
@@ -43,8 +42,6 @@ export type CarItemPropsType = {
 }
 
 export type winnersType = {
-  name: string
-  color: string
   id: number
   wins: number
   time: number

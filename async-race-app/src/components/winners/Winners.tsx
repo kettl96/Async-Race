@@ -7,54 +7,20 @@ import { ReactComponent as Car } from '../garage/car.svg'
 
 
 
-const Winners: React.FC<WinnersPropsType> = ({ isGarage, winners, totalWinners, setWinners, winInfo }) => {
-  console.log(winInfo);
+const Winners: React.FC<WinnersPropsType> = ({ isGarage, winners, totalWinners, winInfo }) => {
 
-  // const [winners, setWinners] = React.useState([] as winnersType)
-  // const [totalWinners, setTotalWinners] = React.useState(0)
   const { load } = React.useContext(AppContext)
-
   let [page, setPage] = React.useState(1)
-
-
-
-  // React.useEffect(() => {
-  //   load(1)
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [])
-
-  // React.useEffect(() => {
-  //   load(page)
-  //   // console.log(1234);
-  //   console.log(winners);
-  //   // setWinners(winners)
-  //   // isGarage = false
-  //   // isGarage=true
-
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [page])
-
-
 
   const nextPage = () => {
     setPage((page += 1))
-    load(page)
+    load(page, '')
   }
   const prevPage = () => {
     setPage((page += -1))
-    load(page)
+    load(page, '')
   }
-  let timeSortCount = 0
-  const timeSort = () => {
-    console.log(
 
-      winners.sort((a, b) => a.time - b.time)
-    );
-    let sortArr = winners.sort((a, b) => a.time - b.time)
-    setWinners(sortArr)
-    if (timeSortCount % 2 === 0) {
-    }
-  }
   const winnerItem = (winners: winnersType) => {
     return (
       <>
@@ -69,6 +35,7 @@ const Winners: React.FC<WinnersPropsType> = ({ isGarage, winners, totalWinners, 
       </>
     )
   }
+
   const winnersInfo = () => {
     return (
       <>
@@ -97,8 +64,8 @@ const Winners: React.FC<WinnersPropsType> = ({ isGarage, winners, totalWinners, 
         <div>Number</div>
         <div>Car</div>
         <div className={s.headerName}>Name</div>
-        <div className={s.headerWins} >Wins</div>
-        <div className={s.headerTime} onClick={timeSort}>Time(s)</div>
+        <div className={s.headerWins} onClick={() => load(page, 'wins')}>Wins</div>
+        <div className={s.headerTime} onClick={() => load(page, 'time')}>Time(s)</div>
       </div>
       <div className={s.infoWrapper}>
         <div>

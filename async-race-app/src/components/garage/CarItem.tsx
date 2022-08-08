@@ -4,8 +4,6 @@ import { CarItemPropsType } from '../../types/types';
 import { ReactComponent as Car } from './car.svg'
 import g from './Garage.module.css'
 
-
-
 const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset, setReset, speed, raceClick, setRaceClick, showWinner, name, isStart }) => {
   let requestId: number
   let duration: number
@@ -49,20 +47,13 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset, setReset, speed
     let start = performance.now();
 
     requestId = requestAnimationFrame(function animate(time) {
-      // timeFraction изменяется от 0 до 1
-      // console.log(errRide);
-
       let timeFraction = (time - start) / duration;
       if (timeFraction > 1) timeFraction = 1;
-
-      // вычисление текущего состояния анимации
       let progress = timing(timeFraction);
-
-      draw(progress); // отрисовать её
+      draw(progress);
       if (errStatus === 500) {
         setStartOn(!startOn)
         setDisableStop(true)
-
         return cancelAnimationFrame(requestId);
       }
       if (timeFraction < 1) {
@@ -77,6 +68,7 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset, setReset, speed
       }
     });
   }
+
   const engineStart = async (id: number) => {
     if (reset) {
       setRide(0)
@@ -113,10 +105,6 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset, setReset, speed
   }
   const disableReset = () => {
     cancelAnimationFrame(requestId)
-    // setRide(0)
-
-    // setEngineOn(false)
-    // setReset()
     return 0
   }
 

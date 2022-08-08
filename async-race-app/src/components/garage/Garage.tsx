@@ -1,7 +1,5 @@
 import React from 'react';
-
 import g from './Garage.module.css'
-import c from './Create.module.css'
 
 import { carsDataType, GaragePropsType, updateCarType } from '../../types/types'
 import axios from 'axios';
@@ -94,7 +92,6 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
       })
   }
 
-
   let resSpeed: number[] = []
   const [speedArr, setSpeedArr] = React.useState([] as number[])
 
@@ -123,7 +120,6 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
   const [win, setWin] = React.useState(false)
   const [winName, setWinName] = React.useState('')
   const [winTime, setWinTime] = React.useState(0)
-  // const winArr: string[] = []
   const { load } = React.useContext(AppContext)
 
   const postWinners = (postWin: { id: number, wins: number, time: number }) => {
@@ -133,23 +129,22 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
           if (e.id === postWin.id) {
             let updWin = { wins: e.wins += 1, time: postWin.time }
             axios.put(`http://127.0.0.1:3000/winners/${postWin.id}`, updWin)
-              .then(res => load(1))
+              .then(res => load(1, ''))
             return
           }
         })
         axios.post(`http://127.0.0.1:3000/winners`, postWin)
-          .then(res => load(1))
-        // console.log(res.data);
+          .then(res => load(1, ''))
       })
 
   }
   const showWinner = (id: number, name: string, result: number) => {
     if (countWinner === 1) {
       setWinName(name)
-      setWinTime(Number(`${result.toString()[0]}.${result.toString()[2]}`))
+      setWinTime(Number(`${Number(result.toString()[0]) === 1 ? 10 : result.toString()[0]}.${result.toString()[2]}`))
       countWinner = 0
       setWin(true)
-      let postWin = { id: id, wins: 1, time: Number(`${result.toString()[0]}.${result.toString()[2]}`) }
+      let postWin = { id: id, wins: 1, time: Number(`${Number(result.toString()[0]) === 1 ? 10 : result.toString()[0]}.${result.toString()[2]}`) }
       postWinners(postWin)
     }
   }
@@ -159,6 +154,7 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
     countWinner = 1
     setReset(true)
   }
+
   const carItems = (data: carsDataType) => {
     return (
       <>
@@ -190,7 +186,6 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
     )
   }
 
-
   return (
     <div className={g.wrapper} style={isGarage ? { display: 'block' } : { display: 'none' }}    >
       {win &&
@@ -199,15 +194,15 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
           <span><b>{winTime}s</b></span>
         </div>
       }
-      <div className={c.wrapper}>
-        <div className={c.inputWrapper}>
+      <div>
+        <div >
           <input type="text"
             onChange={newValue} />
           <input type="color"
             onChange={newColor} />
           <button onClick={() => create(createValue, createColor)}>CREATE</button>
         </div>
-        <div className={c.inputWrapper}>
+        <div >
           <input type="text"
             onChange={updValue}
             value={updateValue}
@@ -219,7 +214,7 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
           <button
             onClick={() => updateClick(updateValue, updateColor, curId)}>UPDATE</button>
         </div>
-        <div className={c.buttonWrapper}>
+        <div>
           <button onClick={race} disabled={start}>RASE</button>
           <button onClick={resetClick}>RESET</button>
           <button onClick={generate}>GENERATE CARS</button>
