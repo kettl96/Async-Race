@@ -1,8 +1,8 @@
 export type GaragePropsType = {
   isGarage: boolean
   carsData: carsDataType
-  setCarsData: (React.Dispatch<React.SetStateAction<carsDataType>>) 
-  setTotalCar: (React.Dispatch<React.SetStateAction<number>>) 
+  setCarsData: (React.Dispatch<React.SetStateAction<carsDataType>>)
+  setTotalCar: (React.Dispatch<React.SetStateAction<number>>)
   totalCars: number
 }
 export type carsDataType = {
@@ -23,11 +23,28 @@ export type updateCarType = {
 }
 export type WinnersPropsType = {
   isGarage: boolean
+  winners: winnersType
+  totalWinners: number
+  setWinners: (React.Dispatch<React.SetStateAction<winnersType>>)
 }
 export type CarItemPropsType = {
   id: number
   color: string
   reset: boolean
-  setReset: ()=> void
+  setReset: () => void
   speed: number
+  raceClick: boolean
+  setRaceClick: (React.Dispatch<React.SetStateAction<boolean>>)
+  showWinner: (id: number, name: string, result: number) => void
+  name: string
+  isStart: boolean
+
 }
+
+export type winnersType = {
+  name: string
+  color: string
+  id: number
+  wins: number
+  time: number
+}[]

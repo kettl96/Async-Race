@@ -7,6 +7,7 @@ import { carsDataType, GaragePropsType, updateCarType } from '../../types/types'
 import axios from 'axios';
 import randomArray from './../random/random-array';
 import CarItem from './CarItem';
+import { AppContext } from './../../App';
 
 
 const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, setTotalCar, isGarage }) => {
@@ -18,6 +19,7 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
   let [page, setPage] = React.useState(1)
   const [reset, setReset] = React.useState(false)
   const [start, setStart] = React.useState(false)
+  const [raceClick, setRaceClick] = React.useState(false)
 
   const create = (createValue: string, createColor: string) => {
     const newCar = {
@@ -92,14 +94,13 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
       })
   }
 
-  const resetClick = () => {
-    setReset(true)
-  }
+
   let resSpeed: number[] = []
   const [speedArr, setSpeedArr] = React.useState([] as number[])
 
   const race = () => {
     resSpeed = []
+    setRaceClick(true)
     setSpeedArr([])
     setStart(true)
 
@@ -114,10 +115,50 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
           }
         })
         setSpeedArr(resSpeed)
-        setTimeout(() => { setStart(false) }, Math.max(...resSpeed))        
+        setTimeout(() => { setStart(false) }, Math.max(...resSpeed))
       })
   }
 
+  let countWinner = 1
+  const [win, setWin] = React.useState(false)
+  const [winName, setWinName] = React.useState('')
+  const [winTime, setWinTime] = React.useState(0)
+  // const winArr: string[] = []
+  const { load } = React.useContext(AppContext)
+
+  const postWinners = (postWin: { id: number, wins: number, time: number }) => {
+    axios.get(`http://127.0.0.1:3000/winners`)
+      .then(res => {
+        res.data.forEach((e: { id: number; wins: number, time: number }) => {
+          if (e.id === postWin.id) {
+            let updWin = { wins: e.wins += 1, time: postWin.time }
+            axios.put(`http://127.0.0.1:3000/winners/${postWin.id}`, updWin)
+              .then(res => load(1))
+            return
+          }
+        })
+        axios.post(`http://127.0.0.1:3000/winners`, postWin)
+          .then(res=> load(1))
+        // console.log(res.data);
+      })
+
+  }
+  const showWinner = (id: number, name: string, result: number) => {
+    if (countWinner === 1) {
+      setWinName(name)
+      setWinTime(Number(`${result.toString()[0]}.${result.toString()[2]}`))
+      countWinner = 0
+      setWin(true)
+      let postWin = { id: id, wins: 1, time: Number(`${result.toString()[0]}.${result.toString()[2]}`) }
+      postWinners(postWin)
+    }
+  }
+
+  const resetClick = () => {
+    setWin(false)
+    countWinner = 1
+    setReset(true)
+  }
   const carItems = (data: carsDataType) => {
     return (
       <>
@@ -136,6 +177,11 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
                 reset={reset}
                 setReset={() => setReset(false)}
                 speed={speedArr[i]}
+                raceClick={raceClick}
+                setRaceClick={setRaceClick}
+                showWinner={showWinner}
+                name={e.name}
+                isStart={start}
               />
             </div>
           )
@@ -147,6 +193,12 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
 
   return (
     <div className={g.wrapper} style={isGarage ? { display: 'block' } : { display: 'none' }}>
+      {win &&
+        <div className={g.showWinner}>
+          <span>Winner: {winName}</span>
+          <span><b>{winTime}s</b></span>
+        </div>
+      }
       <div className={c.wrapper}>
         <div className={c.inputWrapper}>
           <input type="text"

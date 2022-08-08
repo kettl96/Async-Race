@@ -6,7 +6,7 @@ import g from './Garage.module.css'
 
 
 
-const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset, setReset, speed }) => {
+const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset, setReset, speed, raceClick, setRaceClick, showWinner, name, isStart }) => {
   let requestId: number
   let duration: number
 
@@ -17,12 +17,18 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset, setReset, speed
 
   let errStatus = 0
 
+  const raceReq = () => {
+    axios.patch(`http://127.0.0.1:3000/engine?id=${id}&status=drive`)
+      .catch(err => errStatus = err.response.status)
+  }
+
   React.useEffect(() => {
     if (reset) {
       setRide(0)
       setReset()
     }
-    if (speed !== undefined && ride === 0) {
+    if (speed !== undefined && ride === 0 && raceClick) {
+      raceReq()
       animate({
         duration: speed,
         timing(timeFraction: any) {
@@ -34,8 +40,9 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset, setReset, speed
         reset,
         errStatus
       });
+      setRaceClick(false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [speed])
 
   function animate({ timing, draw, duration }: { timing: any, draw: any, duration: number, reset: boolean, errStatus: any }) {
@@ -64,6 +71,9 @@ const CarItem: React.FC<CarItemPropsType> = ({ id, color, reset, setReset, speed
       if (timeFraction === 1) {
         setStartOn(!startOn)
         setDisableStop(true)
+        if (isStart) {
+          showWinner(id, name, speed)
+        }
       }
     });
   }

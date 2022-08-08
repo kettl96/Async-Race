@@ -39,3 +39,20 @@
 .carImg {
   position: relative;
 }
+.showWinner {
+  position: fixed;
+  top: 50%;
+  left: 40%;
+  width: 200px;
+  height: 100px;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  background-color: aliceblue;
+  z-index: 5;
+  font-size: 18px;
+  align-items: center;
+}
+.showWinner  span {
+  margin: 5px;
+}
