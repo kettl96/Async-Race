@@ -26,6 +26,7 @@ export type WinnersPropsType = {
   winners: winnersType
   totalWinners: number
   setWinners: (React.Dispatch<React.SetStateAction<winnersType>>)
+  winInfo: carsDataType
 }
 export type CarItemPropsType = {
   id: number

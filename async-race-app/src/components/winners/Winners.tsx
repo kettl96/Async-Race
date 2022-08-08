@@ -8,8 +8,8 @@ import { ReactComponent as Car } from '../garage/car.svg'
 
 
 
-const Winners: React.FC<WinnersPropsType> = ({ isGarage, winners, totalWinners, setWinners }) => {
-  // console.log(winners);
+const Winners: React.FC<WinnersPropsType> = ({ isGarage, winners, totalWinners, setWinners, winInfo }) => {
+  console.log(winInfo);
 
   // const [winners, setWinners] = React.useState([] as winnersType)
   // const [totalWinners, setTotalWinners] = React.useState(0)
@@ -25,9 +25,18 @@ const Winners: React.FC<WinnersPropsType> = ({ isGarage, winners, totalWinners, 
   // }, [])
 
   // React.useEffect(() => {
-  //   load(1)
+  //   load(page)
+  //   // console.log(1234);
+  //   console.log(winners);
+  //   // setWinners(winners)
+  //   // isGarage = false
+  //   // isGarage=true
+
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [winners])
+  // }, [page])
+
+
+
   const nextPage = () => {
     setPage((page += 1))
     load(page)
@@ -48,25 +57,41 @@ const Winners: React.FC<WinnersPropsType> = ({ isGarage, winners, totalWinners, 
     }
   }
   const winnerItem = (winners: winnersType) => {
-    return winners.map((e, i) => {
-      return (
-        <div key={i} className={s.winner}>
-          <div>{i + 1}</div>
-          <div><Car
-            className={g.carImg}
-            width='50'
-            height='40'
-            fill={e.color}
-          /></div>
-          <div className={s.name}>{e.name}</div>
-          <div className={s.wins}>{e.wins}</div>
-          <div>{e.time}</div>
-        </div>
-      )
-    })
+    return (
+      <>
+        {winners.map((e, i) => {
+          return (
+            <div key={i} className={s.winner}>
+              <div className={s.wins}>{e.wins}</div>
+              <div>{e.time}</div>
+            </div>
+          )
+        })}
+      </>
+    )
+  }
+  const winnersInfo = () => {
+    return (
+      <>
+        {winInfo.map((e, i) => {
+          return (
+            <div key={e.id} className={s.winner}>
+              <div>{i + 1}</div>
+              <div><Car
+                className={g.carImg}
+                width='50'
+                height='40'
+                fill={e.color} />
+              </div>
+              <div className={s.name}>{e.name}</div>
+            </div>
+          )
+        })}
+      </>
+    )
   }
   return (
-    <div className={s.wrapper} style={isGarage ? { display: 'none' } : { display: 'block' }}>
+    <div className={s.wrapper} style={isGarage ? { display: 'none' } : { display: 'block' }}    >
       <h4>Winners: ({totalWinners})</h4>
       <div>Page #{page}</div>
       <div className={s.winnerHeader}>
@@ -76,23 +101,14 @@ const Winners: React.FC<WinnersPropsType> = ({ isGarage, winners, totalWinners, 
         <div className={s.headerWins} >Wins</div>
         <div className={s.headerTime} onClick={timeSort}>Time(s)</div>
       </div>
-      {/* {winners.map((e, i) => {
-        return (
-          <div key={e.id} className={s.winner}>
-            <div>{i + 1}</div>
-            <div><Car
-              className={g.carImg}
-              width='50'
-              height='40'
-              fill={e.color}
-            /></div>
-            <div className={s.name}>{e.name}</div>
-            <div className={s.wins}>{e.wins}</div>
-            <div>{e.time}</div>
-          </div>
-        )
-      })} */}
-      {winnerItem(winners)}
+      <div className={s.infoWrapper}>
+        <div>
+          {winnersInfo()}
+        </div>
+        <div>
+          {winnerItem(winners)}
+        </div>
+      </div>
       <div className={g.pageBtn}>
         <button disabled={page === 1} onClick={prevPage}>prev</button>
         <button disabled={page === Math.ceil(totalWinners / 10)} onClick={nextPage}>next</button>

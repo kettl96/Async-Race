@@ -13,7 +13,7 @@
 
 .winner div {
   margin: 5px 20px;
-
+height: 44px;
 }
 
 .name {
@@ -35,4 +35,7 @@
 
 .wins {
   width: 40px;
+}
+.infoWrapper {
+  display: flex;
 }

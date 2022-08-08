@@ -138,7 +138,7 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
           }
         })
         axios.post(`http://127.0.0.1:3000/winners`, postWin)
-          .then(res=> load(1))
+          .then(res => load(1))
         // console.log(res.data);
       })
 
@@ -192,7 +192,7 @@ const Garage: React.FC<GaragePropsType> = ({ carsData, setCarsData, totalCars, s
 
 
   return (
-    <div className={g.wrapper} style={isGarage ? { display: 'block' } : { display: 'none' }}>
+    <div className={g.wrapper} style={isGarage ? { display: 'block' } : { display: 'none' }}    >
       {win &&
         <div className={g.showWinner}>
           <span>Winner: {winName}</span>
