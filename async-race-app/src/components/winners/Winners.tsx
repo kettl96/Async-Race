@@ -1,7 +1,6 @@
 import { WinnersPropsType, winnersType } from '../../types/types'
 import s from './Winner.module.css'
 import React from 'react';
-import axios from 'axios';
 import { AppContext } from './../../App';
 import g from '../garage/Garage.module.css'
 import { ReactComponent as Car } from '../garage/car.svg'
