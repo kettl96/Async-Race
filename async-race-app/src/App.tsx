@@ -6,7 +6,7 @@ import PagesLinks from './components/pages-links/PagesLinks';
 import Winners from './components/winners/Winners';
 import { carsDataType, winnersType } from './types/types';
 
-export const AppContext = React.createContext({} as {load: (page: number, sort: string)=> void})
+export const AppContext = React.createContext({} as {load: (page: number, sort: string)=> void});
 
 function App() {
   const [isGarage, setGarage] = React.useState(true)
